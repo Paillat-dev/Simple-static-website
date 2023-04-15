@@ -21,9 +21,9 @@ To generate your site, simply run `python static.py` from the command line. Your
 
 The generator looks for files in the `source_dir`. The files can be in either HTML or Markdown format. If you want to use Markdown, make sure to include the YAML front matter at the beginning of your file. You can also include tags in the front matter to customize your page, such as `title` or `modified-date`.
 
-If you want to include a page as a static page (i.e. not processed as a Markdown file), include the tag `static:true` in the front matter. You can also include the tag `template:any template` to specify which template to use for the static page. This will look for a file in the `templates_dir` with the name `any_template.html`.
+If you want to include a page as a non processed page (not processed as a Markdown or html file), include the tag `static:false` in the front matter. If you wan it to be prcessed you WILL need to add the `static:true` tag. You can also include the tag `template:any template` to specify which template to use for the static page. This will look for a file in the `templates_dir` with the name `any_template.html`.
 
-Your templates should have a `<!-- content -->` tag where the content of your pages will be placed. You can also include other tags in your templates, such as `<!-- title -->` or `<!-- modified-date -->`, which will be replaced with the corresponding tag value from your page.
+Your templates should have a `<!-- content -->` html comment where the content of your pages will be placed. You can also include other tags in your templates, such as `<!-- title -->` or `<!-- modified-date -->`, which will be replaced with the corresponding tag value from your page.
 
 ## Custom Code in Templates
 
