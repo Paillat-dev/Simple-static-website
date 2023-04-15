@@ -10,14 +10,13 @@ images_urls = f"{templates_dir}/imgurls.txt"
 extensions = [".html", ".md"]
 website_name = "My Website"
 scripts_dir = "_scripts"
-ignore_files = ["static.py", "utils.py", "config.py", "README.md", "LICENSE", "requirements.txt", "CNAME", ".htaccess", ".gitignore"]
+ignore_files = ["static.py", "utils.py", "config.py", "README.md", "LICENSE", "requirements.txt", "CNAME", ".htaccess", ".gitignore", ".git"]
 
 if os.path.exists(destination_dir):
-    #remove it
     os.rmdir(destination_dir)
 
 # Create the destination directory if it doesn't exist
-os.makedirs(destination_dir, mode=0o777, exist_ok=True) # mode=0o777 is for Windows, and means that the directory is fully accessible
+os.makedirs(destination_dir, exist_ok=True)
 
 # Define a function to check if a file is static
 def is_static(file_path):
@@ -30,14 +29,21 @@ def is_static(file_path):
 
 # Walk through the source directory and copy all files to the destination directory
 def copy_files(source_dir, destination_dir):
-    for root, dirs, files in os.walk(source_dir):
-        dirs[:] = [d for d in dirs if not d.startswith("_")]
-        for file_name in files:
-            if file_name in ignore_files: continue
-            source_path = os.path.join(root, file_name)
-            destination_path = os.path.join(destination_dir, os.path.relpath(source_path, source_dir))
-            os.makedirs(os.path.dirname(destination_path), exist_ok=True)
-            shutil.copy2(source_path, destination_path)
+    # Get a list of all subdirectories in the source directory
+    subdirs = next(os.walk(source_dir))[1]
+
+    # Copy all non-ignored subdirectories and their contents to the destination directory
+    for subdir in subdirs:
+        if not subdir.startswith("_") and subdir not in ignore_files:
+            subdir_path = os.path.join(source_dir, subdir)
+            if os.path.isdir(subdir_path):
+                shutil.copytree(subdir_path, os.path.join(destination_dir, subdir))
+
+    # Copy all non-ignored files in the source directory to the destination directory
+    for filename in os.listdir(source_dir):
+        file_path = os.path.join(source_dir, filename)
+        if os.path.isfile(file_path) and not filename.startswith("_") and filename not in ignore_files:
+            shutil.copy2(file_path, os.path.join(destination_dir, filename))
 
 def process_files(destination_dir):
     for root, dirs, files in os.walk(destination_dir):
