@@ -32,11 +32,10 @@ def copy_files(source_dir, destination_dir):
     for root, dirs, files in os.walk(source_dir):
         dirs[:] = [d for d in dirs if not d.startswith("_")]
         for file_name in files:
-            if os.path.splitext(file_name)[1] in extensions:
-                source_path = os.path.join(root, file_name)
-                destination_path = os.path.join(destination_dir, os.path.relpath(source_path, source_dir))
-                os.makedirs(os.path.dirname(destination_path), exist_ok=True)
-                shutil.copy2(source_path, destination_path)
+            source_path = os.path.join(root, file_name)
+            destination_path = os.path.join(destination_dir, os.path.relpath(source_path, source_dir))
+            os.makedirs(os.path.dirname(destination_path), exist_ok=True)
+            shutil.copy2(source_path, destination_path)
 
 def process_files(destination_dir):
     for root, dirs, files in os.walk(destination_dir):
