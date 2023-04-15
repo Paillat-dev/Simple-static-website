@@ -10,6 +10,7 @@ images_urls = f"{templates_dir}/imgurls.txt"
 extensions = [".html", ".md"]
 website_name = "My Website"
 scripts_dir = "_scripts"
+ignore_files = ["static.py", "utils.py", "config.py", "README.md", "LICENSE", "requirements.txt", "CNAME", ".htaccess", ".gitignore"]
 
 if os.path.exists(destination_dir):
     #remove it
@@ -32,6 +33,7 @@ def copy_files(source_dir, destination_dir):
     for root, dirs, files in os.walk(source_dir):
         dirs[:] = [d for d in dirs if not d.startswith("_")]
         for file_name in files:
+            if file_name in ignore_files: continue
             source_path = os.path.join(root, file_name)
             destination_path = os.path.join(destination_dir, os.path.relpath(source_path, source_dir))
             os.makedirs(os.path.dirname(destination_path), exist_ok=True)
