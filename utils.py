@@ -1,20 +1,17 @@
 import mistune
-import os
 from bs4 import BeautifulSoup, Comment
 
 bypass_tags = ["static", "template", "page-title", "title", "modified-date", "content"]
-class CustomRenderer(mistune.HTMLRenderer):
-    def block_html(self, html):
-        # Treat HTML block-level elements as plain text
-        return html
 
-# Create a Markdown parser with the custom renderer
 def markdown_parser(content):
-    if content.startswith("---"): 
-        content = content.split("---")[2] # Remove YAML front matter
-        return mistune.markdown(content, renderer=CustomRenderer())
-    elif content.startswith("<!--"):
+    if content.startswith("<!--"):
         return content
+    #keep the part after the first --- --- yaml block. BUT keep in mind that the content can contain --- --- too, so we need to split it only once and can't use split("---")!
+    if content.startswith("---"):
+        first_part = content.split("---")[1]
+        #remove the first part from the content
+        content = content.replace(f"---{first_part}---", "")
+        return mistune.html(content)
 
 def opener(file_path):
     # Open a file with the correct encoding and try except block

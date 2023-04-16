@@ -1,6 +1,7 @@
 import os
 import shutil
 from utils import markdown_parser, opener, tagger, bypass_tags, for_comment
+from bs4 import BeautifulSoup, Comment
 
 source_dir = "."
 destination_dir = "_site"
@@ -71,6 +72,11 @@ def process_files(destination_dir):
                             print("executing this:", line)
                             exec(line, globales, locales)
                             final_content = locales["final_content"]
+                    soup = BeautifulSoup(final_content, "html.parser")
+                    comments = soup.find_all(string=lambda text: isinstance(text, Comment))
+                    for comment in comments:
+                        comment.extract()
+                    final_content = str(soup.prettify())
                     with open(file_path.split(".")[0] + ".html", "w", encoding="utf-8") as file:
                         file.write(final_content)
                     if file_path.endswith(".md"): os.remove(file_path)
